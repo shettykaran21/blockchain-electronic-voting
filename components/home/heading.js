@@ -1,33 +1,9 @@
-import PropTypes from 'prop-types'
 import { Button, Container, Header, Icon } from 'semantic-ui-react'
 
 import { Link } from '../../routes'
 
-const Heading = ({ mobile }) => (
+const Heading = () => (
   <Container text className="cont">
-    <Header
-      as="h1"
-      content="A secure, blockchain-based electronic voting system."
-      inverted
-      style={{
-        fontSize: '3em',
-        fontWeight: 'normal',
-        marginBottom: 0,
-        marginTop: mobile ? '1.5em' : '2em',
-        color: 'black',
-      }}
-    />
-    <Header
-      as="h4"
-      content="Make your vote count!"
-      inverted
-      style={{
-        fontSize: mobile ? '1.5em' : '1.7em',
-        fontWeight: 'normal',
-        marginTop: mobile ? '0.5em' : '1.5em',
-        color: 'grey',
-      }}
-    />
     <div style={{ float: 'left', marginTop: '10%' }}>
       <Header as="h4" style={{ color: 'grey' }}>
         Register/ Sign in for the company
@@ -62,9 +38,5 @@ const Heading = ({ mobile }) => (
     </div>
   </Container>
 )
-
-Heading.propTypes = {
-  mobile: PropTypes.bool,
-}
 
 export default Heading
