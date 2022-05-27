@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import React, { Component } from 'react'
 import {
   Button,
@@ -7,7 +8,6 @@ import {
   Grid,
   Segment,
 } from 'semantic-ui-react'
-import { Helmet } from 'react-helmet'
 import Cookies from 'js-cookie'
 
 import { Router } from '../routes'
@@ -106,9 +106,9 @@ class DividerExampleVerticalForm extends Component {
     const { visible } = this.state
     return (
       <div>
-        <Helmet>
+        <Head>
           <title>Company Login</title>
-        </Helmet>
+        </Head>
         <div>
           {this.returnBackImage()}
 

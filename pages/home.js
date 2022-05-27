@@ -6,7 +6,7 @@ import Layout from '../components/layout'
 const HomePage = () => (
   <>
     <Head>
-      <title>HomePage</title>
+      <title>BlockVote</title>
     </Head>
     <Layout>
       <Main />
