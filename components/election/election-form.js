@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import Cookies from 'js-cookie'
 
 import FormButton from '../ui/form-button'
 import FormError from '../ui/form-error'
 import FormInput from '../ui/form-input'
 import FormTextArea from '../ui/form-textarea'
 import FormAlert from './form-alert'
+import web3 from '../../smart-contracts/web3'
+import Election_Factory from '../../smart-contracts/election_factory'
+import { Router } from '../../routes'
 
 const ElectionForm = () => {
   const [loading, setLoading] = useState(false)
@@ -26,9 +30,27 @@ const ElectionForm = () => {
       setLoading(true)
 
       try {
-        console.log(values)
-        res.json({ message: 'Yo!' })
+        const { electionName, electionDescription } = values
+        const email = Cookies.get('company_email')
+
+        const accounts = await web3.eth.getAccounts()
+
+        const bool = await Election_Factory.methods
+          .createElection(email, electionName, electionDescription)
+          .send({ from: accounts[0] })
+
+        if (bool) {
+          const summary = await Election_Factory.methods
+            .getDeployedElection(email)
+            .call({ from: accounts[0] })
+
+          console.log(summary[0])
+
+          Cookies.set('address', summary[0])
+          Router.pushRoute(`/election/${summary[0]}/company_dashboard`)
+        }
       } catch (err) {
+        console.log(err)
         setStatus(err.response.data.message)
       }
 
@@ -69,7 +91,7 @@ const ElectionForm = () => {
         hasError={touched.electionDescription && errors.electionDescription}
         errorMsg={errors.electionDescription && errors.electionDescription}
       />
-      <FormButton>Submit</FormButton>
+      <FormButton isLoading={loading}>Submit</FormButton>
       {status && <FormError>{status}</FormError>}
       <FormAlert>Election creation will take several minutes.</FormAlert>
     </form>
