@@ -1,15 +1,15 @@
-const path = require('path')
-var nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer')
 
 module.exports = {
-  register: function (req, res, cb) {
-    var transporter = nodemailer.createTransport({
+  register: (req, res, next) => {
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSWORD,
       },
     })
+
     const mailOptions = {
       from: process.env.EMAIL,
       to: req.body.email,
@@ -20,7 +20,7 @@ module.exports = {
         ' election.',
     }
 
-    transporter.sendMail(mailOptions, function (err, info) {
+    transporter.sendMail(mailOptions, (err, info) => {
       if (err) {
         res.json({ status: 'error', message: 'mail error', data: null })
         console.log(err)
