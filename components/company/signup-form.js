@@ -5,6 +5,8 @@ import FormInput from '../ui/form-input'
 import Cookies from 'js-cookie'
 
 import api from '../../api'
+import FormButton from '../ui/form-button'
+import FormError from '../ui/form-error'
 
 const SignupForm = ({ toggleVisibility }) => {
   const [loading, setLoading] = useState(false)
@@ -23,8 +25,6 @@ const SignupForm = ({ toggleVisibility }) => {
     initialValues: { email: '', password: '', passwordConfirmation: '' },
 
     onSubmit: async (values, { setStatus, resetForm }) => {
-      setLoading(true)
-
       try {
         const { data } = await api.post(
           '/company/register',
@@ -45,7 +45,6 @@ const SignupForm = ({ toggleVisibility }) => {
       } catch (err) {
         setStatus(err.response.data.message)
       }
-      setLoading(false)
     },
 
     validationSchema: Yup.object({
@@ -109,14 +108,9 @@ const SignupForm = ({ toggleVisibility }) => {
           hasError={touched.passwordConfirmation && errors.passwordConfirmation}
           errorMsg={errors.passwordConfirmation && errors.passwordConfirmation}
         />
-        <button
-          type="submit"
-          className="w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-        >
-          Sign up
-        </button>
+        <FormButton>Sign Up</FormButton>
         {status && (
-          <div className="text-red-400 mt-1 ml-2 text-xs">{status}</div>
+          <FormError>{status}</FormError>
         )}
         <p className="text-gray-500 mt-6 text-center cursor-pointer">
           Already registered?{' '}

@@ -1,4 +1,5 @@
 import React from 'react'
+import FormError from './form-error'
 
 const FormInput = ({ name, type, hasError, errorMsg, ...props }) => {
   return (
@@ -11,9 +12,7 @@ const FormInput = ({ name, type, hasError, errorMsg, ...props }) => {
         }`}
         {...props}
       />
-      {hasError ? (
-        <div className="text-red-400 mt-1 ml-2 text-xs">{errorMsg}</div>
-      ) : null}
+      {hasError ? <FormError>{errorMsg}</FormError> : null}
     </div>
   )
 }
