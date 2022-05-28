@@ -12,11 +12,11 @@ import {
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-plugin-annotation'
 import Cookies from 'js-cookie'
-import { Helmet } from 'react-helmet'
 
 import { Link, Router } from '../../routes'
-import Layout from '../../components/Layout'
 import Election from '../../smart-contracts/election'
+import Layout from '../../components/layout'
+import Head from 'next/head'
 
 var b = 0
 let cand = []
@@ -250,15 +250,10 @@ class ContainerExampleContainer extends Component {
 
   render() {
     return (
-      <div>
-        <Helmet>
+      <>
+        <Head>
           <title>Dashboard</title>
-          <link
-            rel="shortcut icon"
-            type="image/x-icon"
-            href="../../static/logo3.png"
-          />
-        </Helmet>
+        </Head>
         <Grid>
           <Grid.Row>
             <Grid.Column width={2}>{this.SidebarExampleVisible()}</Grid.Column>
@@ -309,7 +304,7 @@ class ContainerExampleContainer extends Component {
             </Layout>
           </Grid.Row>
         </Grid>
-      </div>
+      </>
     )
   }
 }

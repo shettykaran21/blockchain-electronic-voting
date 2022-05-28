@@ -1,70 +1,58 @@
-const CompanyModel = require('../models/company')
 const bcrypt = require('bcrypt')
-const path = require('path')
+
+const CompanyModel = require('../models/company')
 
 module.exports = {
-  create: function (req, res, cb) {
-    CompanyModel.findOne({ email: req.body.email }, function (err, result) {
-      if (err) {
-        cb(err)
-      } else {
-        if (!result) {
-          CompanyModel.create(
-            { email: req.body.email, password: req.body.password },
-            function (err, result) {
-              if (err) cb(err)
-              else {
-                CompanyModel.findOne(
-                  { email: req.body.email },
-                  function (err, CompanyInfo) {
-                    if (err) cb(err)
-                    else {
-                      res.json({
-                        status: 'success',
-                        message: 'Company added successfully!!!',
-                        data: { id: CompanyInfo._id },
-                      })
-                    }
-                  }
-                )
-              }
-            }
-          )
-        } else {
-          res.json({
-            status: 'error',
-            message: 'Company already exists ',
-            data: null,
-          })
-        }
+  create: async (req, res, next) => {
+    try {
+      const { email, password } = req.body
+
+      const existingCompany = await CompanyModel.findOne({ email })
+
+      if (existingCompany) {
+        const error = new Error('Company already exists')
+        error.statusCode = 400
+        throw error
       }
-    })
+
+      const data = await CompanyModel.create({ email, password })
+
+      res.status(201).json({
+        message: 'Company added successfully',
+        data,
+      })
+    } catch (err) {
+      next(err)
+    }
   },
 
-  authenticate: function (req, res, cb) {
-    CompanyModel.findOne(
-      { email: req.body.email },
-      function (err, CompanyInfo) {
-        if (err) cb(err)
-        else {
-          if (
-            bcrypt.compareSync(req.body.password, CompanyInfo.password) &&
-            CompanyInfo.email == req.body.email
-          ) {
-            res.json({
-              status: 'success',
-              message: 'company found!!!',
-              data: { id: CompanyInfo._id, email: CompanyInfo.email },
-            })
-          } else {
-            res.json({
-              status: 'error',
-              message: 'Invalid email/password!!!',
-              data: null,
-            })
-          }
-        }
+  authenticate: async (req, res, next) => {
+    try {
+      const { email, password } = req.body
+
+      const companyData = CompanyModel.findOne({ email })
+
+      if (!data) {
+        const error = new Error('Email not found')
+        error.statusCode = 401
+        throw error
       }
-    )
+
+      if (
+        bcrypt.compareSync(password, companyData.password) &&
+        companyData.email == email
+      ) {
+        res.status(200).json({
+          message: 'Logged in to company',
+          data: { id: companyData._id, email: companyData.email },
+        })
+      } else {
+        const error = new Error('Invalid password')
+        error.statusCode = 401
+        throw error
+      }
+    } catch (err) {
+      next(err)
+    }
   },
 }
