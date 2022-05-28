@@ -13,6 +13,9 @@ import Cookies from 'js-cookie'
 import web3 from '../../smart-contracts/web3'
 import Election_Factory from '../../smart-contracts/election_factory'
 import { Router } from '../../routes'
+import ElectionForm from '../../components/election/election-form'
+import FormContainer from '../../components/ui/form-container'
+import Layout from '../../components/layout'
 
 class LoginForm extends Component {
   state = {
@@ -133,4 +136,17 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm
+const CreateElectionPage = () => {
+  return (
+    <Layout>
+      <FormContainer>
+        <h2 className="text-gray-600 mb-8 text-center font-bold text-2xl">
+          Create an election
+        </h2>
+        <ElectionForm />
+      </FormContainer>
+    </Layout>
+  )
+}
+
+export default CreateElectionPage
