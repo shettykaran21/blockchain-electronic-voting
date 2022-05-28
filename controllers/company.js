@@ -30,9 +30,9 @@ module.exports = {
     try {
       const { email, password } = req.body
 
-      const companyData = CompanyModel.findOne({ email })
+      const companyData = await CompanyModel.findOne({ email })
 
-      if (!data) {
+      if (!companyData) {
         const error = new Error('Email not found')
         error.statusCode = 401
         throw error

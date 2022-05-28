@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import FormInput from '../ui/form-input'
 import Cookies from 'js-cookie'
 
 import api from '../../api'
 import FormButton from '../ui/form-button'
+import FormInput from '../ui/form-input'
 import FormError from '../ui/form-error'
 
 const SignupForm = ({ toggleVisibility }) => {
-  const [loading, setLoading] = useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false)
 
   const {
@@ -20,7 +19,6 @@ const SignupForm = ({ toggleVisibility }) => {
     handleChange,
     handleBlur,
     handleSubmit,
-    isSubmitting,
   } = useFormik({
     initialValues: { email: '', password: '', passwordConfirmation: '' },
 
@@ -109,9 +107,7 @@ const SignupForm = ({ toggleVisibility }) => {
           errorMsg={errors.passwordConfirmation && errors.passwordConfirmation}
         />
         <FormButton>Sign Up</FormButton>
-        {status && (
-          <FormError>{status}</FormError>
-        )}
+        {status && <FormError>{status}</FormError>}
         <p className="text-gray-500 mt-6 text-center cursor-pointer">
           Already registered?{' '}
           <a

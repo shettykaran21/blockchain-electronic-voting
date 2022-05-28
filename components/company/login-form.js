@@ -1,84 +1,120 @@
-import React from 'react'
+import { useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import Cookies from 'js-cookie'
+
+import api from '../../api'
+import FormButton from '../ui/form-button'
+import FormInput from '../ui/form-input'
+import FormError from '../ui/form-error'
+import web3 from '../../smart-contracts/web3'
+import Election_Factory from '../../smart-contracts/election_factory'
+import { Router } from '../../routes'
 
 const LoginForm = ({ toggleVisibility }) => {
-  const signin = async (event) => {
-    const email = document.getElementById('signin_email').value
-    setEmail(email)
-    const password = document.getElementById('signin_password').value
+  const [isAlertOpen, setIsAlertOpen] = useState(false)
 
-    var http = new XMLHttpRequest()
-    var url = 'company/authenticate'
-    var params = 'email=' + email + '&password=' + password
-    http.open('POST', url, true)
-    //Send the proper header information along with the request
-    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-    http.onreadystatechange = function () {
-      //Call a function when the state changes.
-      if (http.readyState == 4 && http.status == 200) {
-        var responseObj = JSON.parse(http.responseText)
-        if (responseObj.status == 'success') {
-          Cookies.set('company_id', encodeURI(responseObj.data.id))
-          Cookies.set('company_email', encodeURI(responseObj.data.email))
+  const {
+    values,
+    errors,
+    touched,
+    status,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  } = useFormik({
+    initialValues: { email: '', password: '' },
+
+    onSubmit: async (values, { setStatus }) => {
+      try {
+        const { data } = await api.post(
+          '/company/authenticate',
+          JSON.stringify(values),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+
+        Cookies.set('company_id', encodeURI(data.data.id))
+        Cookies.set('company_email', encodeURI(data.data.email))
+        setIsAlertOpen(true)
+        setTimeout(() => {
+          setIsAlertOpen(false)
+        }, 5000)
+
+        const accounts = await web3.eth.getAccounts()
+        const summary = await Election_Factory.methods
+          .getDeployedElection(email)
+          .call({ from: accounts[0] })
+
+        if (summary[2] == 'Create an election.') {
+          Router.pushRoute(`/election/create_election`)
         } else {
-          alert(responseObj.message)
+          Cookies.set('address', summary[0])
+          Router.pushRoute(`/election/${summary[0]}/company_dashboard`)
         }
+      } catch (err) {
+        setStatus(err.response.data.message)
       }
-    }
-    http.send(params)
-    try {
-      const accounts = await web3.eth.getAccounts()
-      const summary = await Election_Factory.methods
-        .getDeployedElection(email)
-        .call({ from: accounts[0] })
-      if (summary[2] == 'Create an election.') {
-        Router.pushRoute(`/election/create_election`)
-      } else {
-        Cookies.set('address', summary[0])
-        Router.pushRoute(`/election/${summary[0]}/company_dashboard`)
-      }
-    } catch (err) {
-      console.log(err.Message)
-    }
-  }
+    },
+
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .required('Required')
+        .matches(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+          'Invalid email'
+        ),
+      password: Yup.string().required('Required'),
+    }),
+  })
 
   return (
-    <form>
-      <div className="form-group mb-6">
-        <input
-          type="email"
-          className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-          id="exampleInputEmail2"
-          aria-describedby="emailHelp"
-          placeholder="Enter email"
-        />
-      </div>
-      <div className="form-group mb-6">
-        <input
-          type="password"
-          className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-          id="exampleInputPassword2"
-          placeholder="Password"
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150ease-in-out"
-      >
-        Sign in
-      </button>
-      <p className="text-gray-500 mt-6 text-center cursor-pointer">
-        Not a member?{' '}
-        <a
-          className="text-blue-600 hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out"
-          onClick={toggleVisibility}
+    <>
+      {isAlertOpen && (
+        <div
+          className="bg-green-100 rounded-lg py-5 px-6 mb-4 text-base text-green-700 absolute bottom-4 right-4"
+          role="alert"
         >
-          Register
-        </a>
-      </p>
-    </form>
+          Logged In successfully! Redirecting...
+        </div>
+      )}
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          name="email"
+          type="email"
+          placeholder="Email address"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.email}
+          hasError={touched.email && errors.email}
+          errorMsg={errors.email && errors.email}
+        />
+        <FormInput
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.password}
+          hasError={touched.password && errors.password}
+          errorMsg={errors.password && errors.password}
+        />
+        <FormButton>Sign In</FormButton>
+        {status && <FormError>{status}</FormError>}
+        <p className="text-gray-500 mt-6 text-center cursor-pointer">
+          Not a registered company?{' '}
+          <a
+            className="text-blue-600 hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out"
+            onClick={toggleVisibility}
+          >
+            Register
+          </a>
+        </p>
+      </form>
+    </>
   )
 }
 

@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "frontend": "node server.js"
   },
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
