@@ -1,16 +1,19 @@
 import Head from 'next/head'
 
 import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
+import CandidateList from '../../components/company/candidate-list'
 
-const CandidateList = () => {
+const CandidateListPage = () => {
   return (
     <>
       <Head>
-        <title>Voting list</title>
+        <title>BlockVote | Candidate List</title>
       </Head>
-      <DashboardLayout>CandidateList</DashboardLayout>
+      <DashboardLayout>
+        <CandidateList />
+      </DashboardLayout>
     </>
   )
 }
 
-export default CandidateList
+export default CandidateListPage

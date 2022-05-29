@@ -6,7 +6,7 @@ const DashboardLayout = ({ children }) => {
       <aside className="h-screen sticky top-0">
         <Sidenav />
       </aside>
-      <main className="text-white ml-52">{children}</main>
+      <main className="text-white ml-52 w-full">{children}</main>
     </div>
   )
 }
