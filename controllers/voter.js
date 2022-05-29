@@ -11,8 +11,6 @@ module.exports = {
       const { email, election_address, election_name, election_description } =
         req.body
 
-      console.log(req.body)
-
       const existingVoter = await VoterModel.findOne({
         email,
         election_address,
@@ -66,32 +64,34 @@ module.exports = {
     }
   },
 
-  authenticate: function (req, res, cb) {
-    VoterModel.findOne(
-      { email: req.body.email, password: req.body.password },
-      function (err, voterInfo) {
-        if (err) cb(err)
-        else {
-          if (voterInfo)
-            res.json({
-              status: 'success',
-              message: 'voter found!!!',
-              data: {
-                id: voterInfo._id,
-                election_address: voterInfo.election_address,
-              },
-            })
-          //res.sendFile(path.join(__dirname+'/index.html'));
-          else {
-            res.json({
-              status: 'error',
-              message: 'Invalid email/password!!!',
-              data: null,
-            })
-          }
-        }
+  authenticate: async (req, res, next) => {
+    try {
+      const { email, password } = req.body
+
+      const voter = await VoterModel.findOne({ email })
+
+      if (!voter) {
+        const error = new Error('Voter not found')
+        error.statusCode = 400
+        throw error
       }
-    )
+
+      if (voter.password !== password) {
+        const error = new Error('Invalid password')
+        error.statusCode = 401
+        throw error
+      }
+
+      res.status(200).json({
+        message: 'Voter found!',
+        data: {
+          id: voter._id,
+          election_address: voter.election_address,
+        },
+      })
+    } catch (err) {
+      next(err)
+    }
   },
 
   getAll: function (req, res, cb) {

@@ -16,7 +16,7 @@ const CompanyDashboardPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await api.post(
+      const { data } = await api.post(
         '/voter',
         JSON.stringify({ election_address: Cookies.get('address') }),
         {
@@ -26,7 +26,7 @@ const CompanyDashboardPage = () => {
         }
       )
 
-      setVotersList(data)
+      setVotersList(data.data)
     }
 
     fetchData()
