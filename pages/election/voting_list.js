@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import DashboardLayout from '../../components/company/dashboard-layout'
+import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
 
 const VotingList = () => {
   return (
@@ -8,7 +8,7 @@ const VotingList = () => {
       <Head>
         <title>Voting list</title>
       </Head>
-      <DashboardLayout>CandidateList</DashboardLayout>
+      <DashboardLayout></DashboardLayout>
     </>
   )
 }

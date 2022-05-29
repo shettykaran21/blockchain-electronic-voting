@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import DashboardLayout from '../../components/company/dashboard-layout'
+import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
 
 const CandidateList = () => {
   return (
