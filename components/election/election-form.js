@@ -44,8 +44,6 @@ const ElectionForm = () => {
             .getDeployedElection(email)
             .call({ from: accounts[0] })
 
-          console.log(summary[0])
-
           Cookies.set('address', summary[0])
           Router.pushRoute(`/election/${summary[0]}/company_dashboard`)
         }

@@ -1,23 +1,13 @@
 import Head from 'next/head'
-import React, { Component } from 'react'
-import {
-  Grid,
-  Step,
-  Icon,
-  Menu,
-  Sidebar,
-  Card,
-  Header,
-  Button,
-} from 'semantic-ui-react'
+import React, { useEffect, useState } from 'react'
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-plugin-annotation'
 import Cookies from 'js-cookie'
 
-import { Link, Router } from '../../routes'
 import Election from '../../smart-contracts/election'
+import api from '../../api'
+import DashboardLayout from '../../components/company/dashboard-layout'
 
-var b = 0
 let cand = []
 let graphEmail = []
 let graphVotes = []
@@ -62,255 +52,102 @@ const data = {
   ],
 }
 
-class CompanyDashboardPage extends Component {
-  state = {
-    election_address: Cookies.get('address'),
-    election_name: '',
-    election_desc: '',
-    voters: 0,
-    candidates: 0,
-    visible: false,
-    loading: false,
-    b: 0,
-  }
+const DashboardPage = () => {
+  const [votersList, setVotersList] = useState(null)
+  const [numOfVoters, setNumOfVoters] = useState(0)
+  const [numOfCandidates, setNumOfCandidates] = useState(0)
+  const [electionName, setElectionName] = useState('')
+  const [electionDescription, setElectionDescription] = useState('')
 
-  async componentDidMount() {
-    var http = new XMLHttpRequest()
-    var url = '/voter/'
-    var params = 'election_address=' + Cookies.get('address')
-    http.open('POST', url, true)
-    //Send the proper header information along with the request
-    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-    http.onreadystatechange = function () {
-      //Call a function when the state changes.
-      if (http.readyState == 4 && http.status == 200) {
-        var responseObj = JSON.parse(http.responseText)
-        if (responseObj.status == 'success') {
-          b = responseObj.count
+  const electionAddress = Cookies.get('address')
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await api.post(
+        '/voter',
+        JSON.stringify({ election_address: electionAddress }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
+      )
+
+      setVotersList(data)
+    }
+
+    fetchData()
+  }, [electionAddress])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const election = Election(electionAddress)
+
+        const summary = await election.methods.getElectionDetails().call()
+        const noOfVoters = await election.methods.getNumOfVoters().call()
+
+        const noOfCandidates = await election.methods
+          .getNumOfCandidates()
+          .call()
+
+        setNumOfVoters(noOfVoters)
+        setNumOfCandidates(noOfCandidates)
+        setElectionName(summary[0])
+        setElectionDescription(summary[1])
+
+        console.log(summary)
+
+        for (let i = 0; i < noOfCandidates; i++) {
+          const candidate = await election.methods.getCandidate(i).call()
+          graphEmail.push(candidate[0])
+          graphVotes.push(candidate[3])
+        }
+      } catch (err) {
+        console.log(err.message)
       }
     }
-    http.send(params)
-    try {
-      const add = Cookies.get('address')
-      const election = Election(add)
-      const summary = await election.methods.getElectionDetails().call()
-      const v = await election.methods.getNumOfVoters().call()
-      this.setState({ voters: v })
-      const c = await election.methods.getNumOfCandidates().call()
-      this.setState({ candidates: c })
-      this.setState({
-        election_name: summary[0],
-        election_desc: summary[1],
-      })
 
-      for (let i = 0; i < c; i++) {
-        const tp = await election.methods.getCandidate(i).call()
-        graphEmail.push(tp[0])
-        graphVotes.push(tp[3])
-      }
-      this.returnGraph()
-    } catch (err) {
-      console.log(err.message)
-      alert('Redirecting you to login page...')
-      Router.pushRoute('/company_login')
-    }
-    this.setState({ b: b })
-  }
+    fetchData()
+  }, [electionAddress])
 
-  getElectionDetails = () => {
-    const { election_name, election_desc } = this.state
-
-    return (
-      <div
-        style={{
-          marginLeft: '43%',
-          marginBottom: '2%',
-          marginTop: '2%',
-          float: 'left',
-        }}
-      >
-        <Header as="h2">
-          <Icon name="address card" />
-          <Header.Content>
-            {election_name}
-            <Header.Subheader>{election_desc}</Header.Subheader>
-          </Header.Content>
-        </Header>
-      </div>
-    )
-  }
-  CardExampleGroupProps = () => <Card.Group></Card.Group>
-  GridExampleGrid = () => <Grid>{columns}</Grid>
-  SidebarExampleVisible = () => (
-    <Sidebar.Pushable>
-      <Sidebar
-        as={Menu}
-        animation="overlay"
-        icon="labeled"
-        inverted
-        vertical
-        visible
-        width="thin"
-        style={{ backgroundColor: 'white', borderWidth: '10px' }}
-      >
-        <Menu.Item as="a" style={{ color: 'grey' }}>
-          <h2>MENU</h2>
-          <hr />
-        </Menu.Item>
-        <Link route={`/election/${Cookies.get('address')}/company_dashboard`}>
-          <a>
-            <Menu.Item style={{ color: 'grey', fontColor: 'grey' }}>
-              <Icon name="dashboard" />
-              Dashboard
-            </Menu.Item>
-          </a>
-        </Link>
-        <Link route={`/election/${Cookies.get('address')}/candidate_list`}>
-          <a>
-            <Menu.Item as="a" style={{ color: 'grey' }}>
-              <Icon name="user outline" />
-              Candidate List
-            </Menu.Item>
-          </a>
-        </Link>
-        <Link route={`/election/${Cookies.get('address')}/voting_list`}>
-          <a>
-            <Menu.Item as="a" style={{ color: 'grey' }}>
-              <Icon name="list" />
-              Voter List
-            </Menu.Item>
-          </a>
-        </Link>
-        <hr />
-        <Button onClick={this.signOut} style={{ backgroundColor: 'white' }}>
-          <Menu.Item as="a" style={{ color: 'grey' }}>
-            <Icon name="sign out" />
-            Sign Out
-          </Menu.Item>
-        </Button>
-      </Sidebar>
-    </Sidebar.Pushable>
-  )
-
-  signOut() {
-    Cookies.remove('address')
-    Cookies.remove('company_email')
-    Cookies.remove('company_id')
-    alert('Logging out.')
-    Router.pushRoute('/home')
-  }
-
-  endElection = async (event) => {
+  const endElection = async (event) => {
     let candidate = 0
     try {
-      this.setState({ loading: true })
-      const add = Cookies.get('address')
-      const election = Election(add)
+      setLoading(true)
+      const election = Election(electionAddress)
       candidate = await election.methods.winnerCandidate().call()
       cand = await election.methods.getCandidate(candidate).call()
-      var http = new XMLHttpRequest()
-      var url = '/voter/resultMail'
-      var params =
-        'election_address=' +
-        Cookies.get('address') +
-        '&election_name=' +
-        this.state.election_name +
-        '&candidate_email=' +
-        cand[4] +
-        '&winner_candidate=' +
-        cand[0]
-      http.open('POST', url, true)
-      //Send the proper header information along with the request
-      http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-      http.onreadystatechange = function () {
-        //Call a function when the state changes.
-        if (http.readyState == 4 && http.status == 200) {
-          var responseObj = JSON.parse(http.responseText)
-          if (responseObj.status == 'success') {
-            alert('Mail sent!')
-          } else {
-            alert(responseObj.message)
-          }
-        }
+
+      const params = {
+        election_address: electionAddress,
+        election_name: electionName,
+        candidate_email: cand[4],
+        winner_candidate: cand[0],
       }
-      this.setState({ loading: true })
-      http.send(params)
+
+      await api.post('/voter/resultMail', params, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      setLoading(false)
     } catch (err) {
       console.log(err.message)
     }
   }
 
-  returnModal = () => <h1>I won the election</h1>
-
-  returnGraph = () => (
-    <Bar data={data} width={120} height={50} options={options} />
+  return (
+    <>
+      <Head>
+        <title>Company Dashboard</title>
+      </Head>
+      <DashboardLayout electionAddress={electionAddress}>
+        <Bar data={data} width={120} height={50} options={options} />
+      </DashboardLayout>
+    </>
   )
-
-  render() {
-    return (
-      <>
-        <Head>
-          <title>Dashboard</title>
-        </Head>
-        {/* <Grid>
-          <Grid.Row>
-            <Grid.Column width={2}>{this.SidebarExampleVisible()}</Grid.Column>
-
-            <>
-              <Grid.Column width={16}>
-                {this.getElectionDetails()}
-                <Button
-                  negative
-                  style={{ float: 'right', marginTop: '2%' }}
-                  onClick={this.endElection}
-                  loading={this.state.loading}
-                >
-                  End election
-                </Button>
-                <Step.Group style={{ minWidth: 1130, minHeight: 90 }}>
-                  <Step
-                    icon="users"
-                    title="Voters"
-                    description={this.state.b}
-                  />
-                  <Step
-                    icon="user outline"
-                    title="Candidates"
-                    description={this.state.candidates}
-                  />
-                  <Step
-                    icon="chart bar outline"
-                    title="Total Votes"
-                    description={this.state.voters}
-                  />
-                </Step.Group>
-                {this.CardExampleGroupProps()}
-
-                <Grid.Column>
-                  <br />
-                  <div className="he">
-                    <style jsx>{`
-                      .he {
-                        height: 50%;
-                        max-width: 100%;
-                      }
-                    `}</style>
-                    {this.returnGraph()}
-                  </div>
-                </Grid.Column>
-              </Grid.Column>
-            </>
-          </Grid.Row>
-        </Grid> */}
-        <div className="flex">
-          <aside className="h-screen sticky top-0"> Fixed Sidebar</aside>
-
-          <main></main>
-        </div>
-      </>
-    )
-  }
 }
 
-export default CompanyDashboardPage
+export default DashboardPage
