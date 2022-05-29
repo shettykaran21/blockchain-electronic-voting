@@ -1,16 +1,9 @@
+import Head from 'next/head'
 import React, { Component } from 'react'
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Image,
-  Message,
-  Segment,
-} from 'semantic-ui-react'
+
+import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
 import Cookies from 'js-cookie'
 import { Router } from '../routes'
-import { Helmet } from 'react-helmet'
 
 class LoginForm extends Component {
   state = {
@@ -107,17 +100,12 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <div>
-        <Helmet>
+      <>
+        <Head>
           <title>Voter login</title>
-          <link
-            rel="shortcut icon"
-            type="image/x-icon"
-            href="../../static/logo3.png"
-          />
-        </Helmet>
+        </Head>
         {this.LoginForm()}
-      </div>
+      </>
     )
   }
 }

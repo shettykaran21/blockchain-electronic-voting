@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import React, { Component } from 'react'
 import {
   Grid,
@@ -15,8 +16,6 @@ import Cookies from 'js-cookie'
 
 import { Link, Router } from '../../routes'
 import Election from '../../smart-contracts/election'
-import Layout from '../../components/layout'
-import Head from 'next/head'
 
 var b = 0
 let cand = []
@@ -63,7 +62,7 @@ const data = {
   ],
 }
 
-class ContainerExampleContainer extends Component {
+class CompanyDashboardPage extends Component {
   state = {
     election_address: Cookies.get('address'),
     election_name: '',
@@ -254,11 +253,11 @@ class ContainerExampleContainer extends Component {
         <Head>
           <title>Dashboard</title>
         </Head>
-        <Grid>
+        {/* <Grid>
           <Grid.Row>
             <Grid.Column width={2}>{this.SidebarExampleVisible()}</Grid.Column>
 
-            <Layout>
+            <>
               <Grid.Column width={16}>
                 {this.getElectionDetails()}
                 <Button
@@ -301,12 +300,17 @@ class ContainerExampleContainer extends Component {
                   </div>
                 </Grid.Column>
               </Grid.Column>
-            </Layout>
+            </>
           </Grid.Row>
-        </Grid>
+        </Grid> */}
+        <div className="flex">
+          <aside className="h-screen sticky top-0"> Fixed Sidebar</aside>
+
+          <main></main>
+        </div>
       </>
     )
   }
 }
 
-export default ContainerExampleContainer
+export default CompanyDashboardPage

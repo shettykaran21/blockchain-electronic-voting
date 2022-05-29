@@ -9,6 +9,7 @@
     "frontend": "node server.js"
   },
   "dependencies": {
+    "@truffle/hdwallet-provider": "^2.0.8",
     "@zeit/next-css": "^1.0.1",
     "axios": "^0.27.2",
     "bcrypt": "^3.0.6",
@@ -35,7 +36,6 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.86.0",
     "solc": "^0.4.25",
-    "truffle-hdwallet-provider": "^1.0.5",
     "web3": "^1.0.0-beta.52",
     "yup": "^0.32.11"
   },
