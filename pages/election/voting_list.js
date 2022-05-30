@@ -71,6 +71,7 @@ const VotingListPage = () => {
           <VotingList
             electionName={electionName}
             electionDescription={electionDescription}
+            votersList={votersList}
           />
         </DashboardLayout>
       )}

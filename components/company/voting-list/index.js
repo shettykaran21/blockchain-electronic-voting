@@ -1,6 +1,7 @@
 import VotingForm from './voting-form'
 
-const VotingList = ({ electionName, electionDescription }) => {
+const VotingList = ({ electionName, electionDescription, votersList }) => {
+  console.log(votersList)
   return (
     <div>
       <VotingForm

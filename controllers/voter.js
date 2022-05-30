@@ -94,6 +94,34 @@ module.exports = {
     }
   },
 
+  getAll: async (req, res, next) => {
+    try {
+      const { election_address } = req.body
+
+      let voterList = []
+
+      const voters = await VoterModel.find({ election_address })
+
+      voterList = voters.map((voter) => {
+        return {
+          id: voter._id,
+          email: voter.email,
+        }
+      })
+      const count = voterList.length
+
+      res.status(200).json({
+        message: 'Voter list found successfully',
+        data: {
+          voterList,
+          count,
+        },
+      })
+    } catch (err) {
+      next(err)
+    }
+  },
+
   getAll: function (req, res, cb) {
     let voterList = []
 

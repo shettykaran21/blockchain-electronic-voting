@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 import { Router } from '../../routes'
 import SidenavLink from './sidenav-link'
 
-const Sidenav = ({ electionAddress }) => {
+const Sidenav = () => {
   const signOut = () => {
     Cookies.remove('address')
     Cookies.remove('company_email')
