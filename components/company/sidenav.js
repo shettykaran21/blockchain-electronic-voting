@@ -29,10 +29,10 @@ const Sidenav = () => {
           Dashboard
         </SidenavLink>
         <SidenavLink href={`/election/${electionAddress}/candidate_list`}>
-          Candidates List
+          Candidate List
         </SidenavLink>
         <SidenavLink href={`/election/${electionAddress}/voting_list`}>
-          Voters List
+          Voter List
         </SidenavLink>
         <button
           className="text-white-800 ml-6 text-sm flex items-center gap-4 mt-8"

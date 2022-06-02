@@ -119,7 +119,7 @@ const CandidateForm = ({ electionDetails }) => {
           {alertMsg}
         </div>
       )}
-      <FormContainer>
+      <FormContainer width="full">
         <form onSubmit={handleSubmit}>
           <FormInput
             name="name"
