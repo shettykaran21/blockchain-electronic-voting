@@ -8,13 +8,15 @@ const CandidateCard = ({ candidateDetails }) => {
   return (
     <div className="flex justify-center">
       <div className="rounded-lg shadow-lg bg-white max-w-[16rem]">
-        <img
-          className="rounded-t-lg object-cover"
-          src={imageUrl}
-          alt="Candidate"
-          width={256}
-          height={150}
-        />
+        <div className="h-[200px] overflow-hidden">
+          <img
+            className="rounded-t-lg object-cover"
+            src={imageUrl}
+            alt="Candidate"
+            width={256}
+            height={150}
+          />
+        </div>
         <div className="p-6 pb-0">
           <h5 className="text-gray-900 text-l font-medium mb-2">{name}</h5>
           <p className="text-gray-700 text-sm mb-4">{description}</p>

@@ -52,7 +52,7 @@ const CandidateForm = ({ electionDetails }) => {
         const election = Election(address)
         const accounts = await web3.eth.getAccounts()
         await election.methods
-          .addCandidate(name, description, cid, email)
+          .addCandidate(name, description, `${cid}/${file.name}`, email)
           .send({ from: accounts[0] })
 
         await api.post(
