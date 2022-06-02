@@ -122,30 +122,6 @@ module.exports = {
     }
   },
 
-  getAll: function (req, res, cb) {
-    let voterList = []
-
-    VoterModel.find(
-      { election_address: req.body.election_address },
-      function (err, voters) {
-        if (err) cb(err)
-        else {
-          for (let voter of voters)
-            voterList.push({ id: voter._id, email: voter.email })
-
-          count = voterList.length
-
-          res.json({
-            status: 'success',
-            message: 'voters list found!!!',
-            data: { voters: voterList },
-            count: count,
-          })
-        }
-      }
-    )
-  },
-
   updateById: function (req, res, cb) {
     VoterModel.findOne({ email: req.body.email }, function (err, result) {
       if (err) {
