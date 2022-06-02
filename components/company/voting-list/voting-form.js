@@ -8,6 +8,7 @@ import FormButton from '../../ui/form-button'
 import FormContainer from '../../ui/form-container'
 import FormError from '../../ui/form-error'
 import FormInput from '../../ui/form-input'
+import Alert from '../../ui/alert'
 
 const VotingForm = ({ electionName, electionDescription }) => {
   const [loading, setLoading] = useState(false)
@@ -74,22 +75,8 @@ const VotingForm = ({ electionName, electionDescription }) => {
 
   return (
     <>
-      {isAlertOpen && (
-        <div
-          className="bg-green-100 rounded-lg py-5 px-6 mb-4 text-base text-green-700 absolute bottom-4 right-4"
-          role="alert"
-        >
-          {alertMsg}
-        </div>
-      )}
-      {isErrorAlertOpen && (
-        <div
-          className="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 absolute bottom-4 right-4"
-          role="alert"
-        >
-          {alertMsg}
-        </div>
-      )}
+      {isAlertOpen && <Alert>{alertMsg}</Alert>}
+      {isErrorAlertOpen && <Alert isError>{alertMsg}</Alert>}
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <FormInput

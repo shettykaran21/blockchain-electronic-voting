@@ -9,6 +9,7 @@ import Election from '../../smart-contracts/election'
 const CandidateListPage = () => {
   const [electionAddress, setElectionAddress] = useState(Cookies.get('address'))
   const [electionDetails, setElectionDetails] = useState({})
+  const [candidates, setCandidates] = useState([])
 
   useEffect(() => {
     setElectionAddress(Cookies.get('address'))
@@ -32,7 +33,16 @@ const CandidateListPage = () => {
         candidates.push(await election.methods.getCandidate(i).call())
       }
 
-      console.log(candidates)
+      const candidatesTransformed = candidates.map((c) => {
+        return {
+          name: c[0],
+          description: c[1],
+          imageUrl: `https://dweb.link/ipfs/${c[2]}`,
+          voteCount: c[3],
+        }
+      })
+
+      setCandidates(candidatesTransformed)
     }
 
     fetchData()
@@ -44,7 +54,12 @@ const CandidateListPage = () => {
         <title>BlockVote | Candidate List</title>
       </Head>
       <DashboardLayout>
-        {electionDetails && <CandidateList electionDetails={electionDetails} />}
+        {electionDetails && (
+          <CandidateList
+            electionDetails={electionDetails}
+            candidates={candidates}
+          />
+        )}
       </DashboardLayout>
     </>
   )

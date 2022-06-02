@@ -10,6 +10,7 @@ import FormError from '../ui/form-error'
 import web3 from '../../smart-contracts/web3'
 import Election_Factory from '../../smart-contracts/election_factory'
 import { Router } from '../../routes'
+import Alert from '../ui/alert'
 
 const LoginForm = ({ toggleVisibility }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false)
@@ -73,14 +74,7 @@ const LoginForm = ({ toggleVisibility }) => {
 
   return (
     <>
-      {isAlertOpen && (
-        <div
-          className="bg-green-100 rounded-lg py-5 px-6 mb-4 text-base text-green-700 absolute bottom-4 right-4"
-          role="alert"
-        >
-          Logged In successfully! Redirecting...
-        </div>
-      )}
+      {isAlertOpen && <Alert>Logged In successfully! Redirecting...</Alert>}
       <form onSubmit={handleSubmit}>
         <FormInput
           name="email"

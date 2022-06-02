@@ -7,6 +7,7 @@ import api from '../../api'
 import FormButton from '../ui/form-button'
 import FormInput from '../ui/form-input'
 import FormError from '../ui/form-error'
+import Alert from '../ui/alert'
 
 const SignupForm = ({ toggleVisibility }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false)
@@ -66,14 +67,7 @@ const SignupForm = ({ toggleVisibility }) => {
 
   return (
     <>
-      {isAlertOpen && (
-        <div
-          className="bg-green-100 rounded-lg py-5 px-6 mb-4 text-base text-green-700 absolute bottom-4 right-4"
-          role="alert"
-        >
-          Signed Up successfully! Please login
-        </div>
-      )}
+      {isAlertOpen && <Alert>Signed Up successfully! Please login</Alert>}
 
       <form onSubmit={handleSubmit}>
         <FormInput

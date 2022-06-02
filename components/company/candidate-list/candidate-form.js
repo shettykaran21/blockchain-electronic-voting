@@ -13,10 +13,10 @@ import FormFileInput from '../../ui/form-file-input'
 import api from '../../../api'
 import web3 from '../../../smart-contracts/web3'
 import FormAlert from '../../election/form-alert'
+import Alert from '../../ui/alert'
 
 const CandidateForm = ({ electionDetails }) => {
   const [file, setFile] = useState(null)
-  const [urlArr, setUrlArr] = useState([])
   const [loading, setLoading] = useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false)
   const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false)
@@ -47,8 +47,6 @@ const CandidateForm = ({ electionDetails }) => {
       try {
         const cid = await storage.put([file])
         console.log('Content added with CID:', cid)
-        const url = `https://dweb.link/ipfs/${cid}`
-        setUrlArr((prev) => [...prev, url])
 
         const address = Cookies.get('address')
         const election = Election(address)
@@ -103,62 +101,50 @@ const CandidateForm = ({ electionDetails }) => {
 
   return (
     <>
-      {isAlertOpen && (
-        <div
-          className="bg-green-100 rounded-lg py-5 px-6 mb-4 text-base text-green-700 absolute bottom-4 right-4"
-          role="alert"
-        >
-          {alertMsg}
-        </div>
-      )}
-      {isErrorAlertOpen && (
-        <div
-          className="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 absolute bottom-4 right-4"
-          role="alert"
-        >
-          {alertMsg}
-        </div>
-      )}
-      <FormContainer width="full">
-        <form onSubmit={handleSubmit}>
-          <FormInput
-            name="name"
-            type="text"
-            placeholder="Name"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.name}
-            hasError={touched.name && errors.name}
-            errorMsg={errors.name && errors.name}
-          />
-          <FormInput
-            name="description"
-            type="text"
-            placeholder="Description"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.description}
-            hasError={touched.description && errors.description}
-            errorMsg={errors.description && errors.description}
-          />
-          <FormInput
-            name="email"
-            type="email"
-            placeholder="Email address"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.email}
-            hasError={touched.email && errors.email}
-            errorMsg={errors.email && errors.email}
-          />
-          <FormFileInput onChange={retrieveFile} />
-          <FormButton isLoading={loading}>Register</FormButton>
-          {status && <FormError>{status}</FormError>}
-          <FormAlert>
-            Candidate registration might take several minutes.
-          </FormAlert>
-        </form>
-      </FormContainer>
+      {isAlertOpen && <Alert>{alertMsg}</Alert>}
+      {isErrorAlertOpen && <Alert isError>{alertMsg}</Alert>}
+      <div className="sticky">
+        <FormContainer width="full">
+          <form onSubmit={handleSubmit}>
+            <FormInput
+              name="name"
+              type="text"
+              placeholder="Name"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.name}
+              hasError={touched.name && errors.name}
+              errorMsg={errors.name && errors.name}
+            />
+            <FormInput
+              name="description"
+              type="text"
+              placeholder="Description"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.description}
+              hasError={touched.description && errors.description}
+              errorMsg={errors.description && errors.description}
+            />
+            <FormInput
+              name="email"
+              type="email"
+              placeholder="Email address"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.email}
+              hasError={touched.email && errors.email}
+              errorMsg={errors.email && errors.email}
+            />
+            <FormFileInput onChange={retrieveFile} />
+            <FormButton isLoading={loading}>Register</FormButton>
+            {status && <FormError>{status}</FormError>}
+            <FormAlert>
+              Candidate registration might take several minutes.
+            </FormAlert>
+          </form>
+        </FormContainer>
+      </div>
     </>
   )
 }
