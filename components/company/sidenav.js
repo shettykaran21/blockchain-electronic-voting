@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 import { Router } from '../../routes'
 import SidenavLink from './sidenav-link'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 const Sidenav = () => {
   const [electionAddress, setElectionAddress] = useState(null)
@@ -23,7 +24,12 @@ const Sidenav = () => {
   }
 
   return (
-    <div className="w-52 h-full shadow-md bg-gray-800 px-1 absolute">
+    <div className="w-52 h-full shadow-md shadow-slate-600 bg-black-primary px-1 absolute">
+      <h1 className="font-extrabold font-logo text-3xl cursor-pointer text-center py-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-gradient-1 to-blue-gradient-2">
+        <Link href="/home">
+          <a>BlockVote</a>
+        </Link>
+      </h1>
       <ul className="relative">
         <SidenavLink href={`/election/${electionAddress}/company_dashboard`}>
           Dashboard
