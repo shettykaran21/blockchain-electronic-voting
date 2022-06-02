@@ -10,6 +10,7 @@ const CandidateListPage = () => {
   const [electionAddress, setElectionAddress] = useState(Cookies.get('address'))
   const [electionDetails, setElectionDetails] = useState({})
   const [candidates, setCandidates] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setElectionAddress(Cookies.get('address'))
@@ -17,6 +18,8 @@ const CandidateListPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
+
       const election = await Election(electionAddress)
 
       const summary = await election.methods.getElectionDetails().call()
@@ -43,6 +46,8 @@ const CandidateListPage = () => {
       })
 
       setCandidates(candidatesTransformed)
+
+      setLoading(false)
     }
 
     fetchData()
@@ -56,6 +61,7 @@ const CandidateListPage = () => {
       <DashboardLayout>
         {electionDetails && (
           <CandidateList
+            loading={loading}
             electionDetails={electionDetails}
             candidates={candidates}
           />

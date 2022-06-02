@@ -1,12 +1,13 @@
+import Loader from '../../ui/loader'
 import CandidateForm from './candidate-form'
 import CandidateListContent from './candidate-list-content'
 
-const CandidateList = ({ electionDetails, candidates }) => {
+const CandidateList = ({ loading, electionDetails, candidates }) => {
   return (
     <div className="pr-16 p-8">
       <h1 className="font-heading font-semibold text-2xl">Candidate List</h1>
-      <div className="flex justify-between items-start">
-        <CandidateListContent candidates={candidates} />
+      <div className="flex justify-between items-start relative">
+        <CandidateListContent candidates={candidates} loading={loading} />
         <CandidateForm electionDetails={electionDetails} />
       </div>
     </div>
