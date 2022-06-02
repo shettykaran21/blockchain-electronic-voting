@@ -91,7 +91,7 @@ const ElectionForm = () => {
       />
       <FormButton isLoading={loading}>Submit</FormButton>
       {status && <FormError>{status}</FormError>}
-      <FormAlert>Election creation will take several minutes.</FormAlert>
+      <FormAlert>Election creation might take several minutes.</FormAlert>
     </form>
   )
 }
