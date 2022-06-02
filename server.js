@@ -11,7 +11,7 @@ const candidate = require('./routes/candidate')
 
 const exp = express()
 
-require('dotenv').config({ path: __dirname + '/.env' })
+require('dotenv').config()
 
 exp.use(
   bodyParser.urlencoded({

@@ -14,23 +14,18 @@ module.exports = {
       const mailOptions = {
         from: process.env.EMAIL,
         to: req.body.email,
-        subject: req.body.election_name + 'Registration',
-        html:
-          'Congrats you have been registered for  ' +
-          req.body.election_name +
-          ' election.',
+        subject: `${req.body.election_name} Registration`,
+        html: `Congrats you have been registered for ${req.body.election_name} election.`,
       }
 
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
-          res.json({ status: 'error', message: 'mail error', data: null })
-          console.log(err)
-        } else console.log(info)
-        res.json({
-          status: 'success',
-          message: 'mail sent successfully!!!',
-          data: null,
-        })
+          const error = new Error('Mail error')
+          error.statusCode = 401
+          throw error
+        } else {
+          res.status(200).json({ message: 'Mail sent successfully' })
+        }
       })
     } catch (err) {
       next(err)

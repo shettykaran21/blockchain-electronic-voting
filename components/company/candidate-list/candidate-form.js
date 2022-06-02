@@ -1,13 +1,29 @@
+import { useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import Cookies from 'js-cookie'
 
 import FormButton from '../../ui/form-button'
 import FormContainer from '../../ui/form-container'
 import FormError from '../../ui/form-error'
 import FormInput from '../../ui/form-input'
 import Election from '../../../smart-contracts/election'
+import storage from '../../../ipfs'
+import FormFileInput from '../../ui/form-file-input'
+import api from '../../../api'
+import web3 from '../../../smart-contracts/web3'
 
-const CandidateForm = () => {
+const CandidateForm = ({ electionDetails }) => {
+  const [file, setFile] = useState(null)
+  const [urlArr, setUrlArr] = useState([])
+
+  const retrieveFile = (e) => {
+    const data = e.target.files[0]
+    setFile(data)
+
+    e.preventDefault()
+  }
+
   const {
     values,
     errors,
@@ -20,28 +36,32 @@ const CandidateForm = () => {
     initialValues: { name: '', description: '', email: '' },
 
     onSubmit: async (values, { setStatus }) => {
-      console.log(values)
+      const { name, description, email } = values
       try {
-        await ipfs.add(this.state.buffer, (err, ipfsHash) => {
-          this.setState({ ipfsHash: ipfsHash[0].hash })
+        const cid = await storage.put([file])
+        console.log('Content added with CID:', cid)
+        const url = `https://dweb.link/ipfs/${cid}`
+        setUrlArr((prev) => [...prev, url])
 
-          const add = Cookies.get('address')
-          const election = Election(add)
+        const address = Cookies.get('address')
+        const election = Election(address)
+        const accounts = await web3.eth.getAccounts()
+        await election.methods
+          .addCandidate(name, description, cid, email)
+          .send({ from: accounts[0] })
 
-          election.methods
-            .addCandidate(
-              this.state.cand_name,
-              this.state.cand_desc,
-              this.state.ipfsHash,
-              document.getElementById('email').value
-            )
-            .send(
-              {
-                from: accounts[0],
-              },
-              (error, transactionHash) => {}
-            )
-        })
+        await api.post(
+          '/candidate/registerCandidate',
+          JSON.stringify({
+            email,
+            election_name: electionDetails.electionName,
+          }),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
       } catch (err) {
         setStatus(err.response.data.message)
       }
@@ -92,6 +112,7 @@ const CandidateForm = () => {
           hasError={touched.email && errors.email}
           errorMsg={errors.email && errors.email}
         />
+        <FormFileInput onChange={retrieveFile} />
         <FormButton>Register</FormButton>
         {status && <FormError>{status}</FormError>}
       </form>

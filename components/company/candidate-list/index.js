@@ -1,10 +1,10 @@
 import React from 'react'
 import CandidateForm from './candidate-form'
 
-const CandidateList = () => {
+const CandidateList = ({ electionDetails }) => {
   return (
     <div>
-      <CandidateForm />
+      <CandidateForm electionDetails={electionDetails} />
     </div>
   )
 }
