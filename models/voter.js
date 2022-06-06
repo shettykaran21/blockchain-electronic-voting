@@ -24,4 +24,4 @@ VoterSchema.pre('save', function (cb) {
   cb()
 })
 
-module.exports = mongoose.model('VoterList', VoterSchema)
+module.exports = mongoose.model('Voter', VoterSchema)

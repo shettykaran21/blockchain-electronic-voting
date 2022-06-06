@@ -20,4 +20,4 @@ CompanySchema.pre('save', function (cb) {
   cb()
 })
 
-module.exports = mongoose.model('CompanyList', CompanySchema)
+module.exports = mongoose.model('Company', CompanySchema)
