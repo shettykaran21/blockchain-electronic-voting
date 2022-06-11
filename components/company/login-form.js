@@ -40,10 +40,8 @@ const LoginForm = ({ toggleVisibility }) => {
 
         Cookies.set('company_id', encodeURI(data.data.id))
         Cookies.set('company_email', encodeURI(data.data.email))
+
         setIsAlertOpen(true)
-        setTimeout(() => {
-          setIsAlertOpen(false)
-        }, 5000)
 
         const accounts = await web3.eth.getAccounts()
         const summary = await Election_Factory.methods
