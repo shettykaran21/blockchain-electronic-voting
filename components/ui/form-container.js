@@ -1,6 +1,10 @@
-const FormContainer = ({ width, children }) => {
+const FormContainer = ({ width, center = true, children }) => {
   return (
-    <div className="flex flex-col justify-center items-center min-h-[calc(100vh-80px)]">
+    <div
+      className={`${
+        center && 'justify-center'
+      } flex flex-col items-center min-h-[calc(100vh-80px)]`}
+    >
       <div
         className={`${
           width ? `w-${width}` : 'w-1/2'

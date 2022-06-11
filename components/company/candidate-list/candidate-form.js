@@ -104,7 +104,7 @@ const CandidateForm = ({ electionDetails }) => {
       {isAlertOpen && <Alert>{alertMsg}</Alert>}
       {isErrorAlertOpen && <Alert isError>{alertMsg}</Alert>}
       <div className="sticky">
-        <FormContainer width="full">
+        <FormContainer width="full" center={false}>
           <form onSubmit={handleSubmit}>
             <FormInput
               name="name"

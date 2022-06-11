@@ -12,10 +12,12 @@ const VotingListPage = () => {
   const [numOfCandidates, setNumOfCandidates] = useState(0)
   const [electionName, setElectionName] = useState(null)
   const [electionDescription, setElectionDescription] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await api.post(
+      setLoading(true)
+      const { data } = await api.post(
         '/voter',
         JSON.stringify({ election_address: Cookies.get('address') }),
         {
@@ -25,7 +27,8 @@ const VotingListPage = () => {
         }
       )
 
-      setVotersList(data)
+      setVotersList(data.data.voterList)
+      setLoading(false)
     }
 
     fetchData()
@@ -66,12 +69,13 @@ const VotingListPage = () => {
       <Head>
         <title>Voting list</title>
       </Head>
-      {electionName && (
+      {votersList && (
         <DashboardLayout>
           <VotingList
+            loading={loading}
             electionName={electionName}
             electionDescription={electionDescription}
-            votersList={votersList}
+            voters={votersList}
           />
         </DashboardLayout>
       )}

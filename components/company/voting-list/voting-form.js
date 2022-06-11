@@ -77,22 +77,24 @@ const VotingForm = ({ electionName, electionDescription }) => {
     <>
       {isAlertOpen && <Alert>{alertMsg}</Alert>}
       {isErrorAlertOpen && <Alert isError>{alertMsg}</Alert>}
-      <FormContainer>
-        <form onSubmit={handleSubmit}>
-          <FormInput
-            name="email"
-            type="email"
-            placeholder="Email address"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.email}
-            hasError={touched.email && errors.email}
-            errorMsg={errors.email && errors.email}
-          />
-          <FormButton isLoading={loading}>Register</FormButton>
-          {status && <FormError>{status}</FormError>}
-        </form>
-      </FormContainer>
+      <div className="sticky">
+        <FormContainer width="full" center={false}>
+          <form onSubmit={handleSubmit}>
+            <FormInput
+              name="email"
+              type="email"
+              placeholder="Email address"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.email}
+              hasError={touched.email && errors.email}
+              errorMsg={errors.email && errors.email}
+            />
+            <FormButton isLoading={loading}>Register</FormButton>
+            {status && <FormError>{status}</FormError>}
+          </form>
+        </FormContainer>
+      </div>
     </>
   )
 }
