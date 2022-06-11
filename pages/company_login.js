@@ -6,7 +6,7 @@ import LoginForm from '../components/company/login-form'
 import SignupForm from '../components/company/signup-form'
 import FormContainer from '../components/ui/form-container'
 
-const CompanyForm = () => {
+const CompanyLoginPage = () => {
   const [visible, setVisible] = useState(true)
 
   const toggleVisibility = () => setVisible((prevVisible) => !prevVisible)
@@ -29,4 +29,4 @@ const CompanyForm = () => {
   )
 }
 
-export default CompanyForm
+export default CompanyLoginPage

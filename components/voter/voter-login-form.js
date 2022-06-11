@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Cookies from 'js-cookie'
@@ -7,12 +7,10 @@ import api from '../../api'
 import FormButton from '../ui/form-button'
 import FormInput from '../ui/form-input'
 import FormError from '../ui/form-error'
-import web3 from '../../smart-contracts/web3'
-import Election_Factory from '../../smart-contracts/election_factory'
-import { Router } from '../../routes'
 import Alert from '../ui/alert'
+import { Router } from '../../routes'
 
-const LoginForm = ({ toggleVisibility }) => {
+const VoterLoginForm = () => {
   const [isAlertOpen, setIsAlertOpen] = useState(false)
 
   useEffect(() => {
@@ -35,7 +33,7 @@ const LoginForm = ({ toggleVisibility }) => {
     onSubmit: async (values, { setStatus }) => {
       try {
         const { data } = await api.post(
-          '/company/authenticate',
+          '/voter/authenticate',
           JSON.stringify(values),
           {
             headers: {
@@ -44,22 +42,11 @@ const LoginForm = ({ toggleVisibility }) => {
           }
         )
 
-        Cookies.set('company_id', encodeURI(data.data.id))
-        Cookies.set('company_email', encodeURI(data.data.email))
-
         setIsAlertOpen(true)
 
-        const accounts = await web3.eth.getAccounts()
-        const summary = await Election_Factory.methods
-          .getDeployedElection(email)
-          .call({ from: accounts[0] })
-
-        if (summary[2] == 'Create an election.') {
-          Router.pushRoute(`/election/create_election`)
-        } else {
-          Cookies.set('address', summary[0])
-          Router.pushRoute(`/election/${summary[0]}/company_dashboard`)
-        }
+        Cookies.set('voter_email', encodeURI(values.email))
+        Cookies.set('address', encodeURI(data.data.election_address))
+        Router.pushRoute(`/election/${data.data.election_address}/vote`)
       } catch (err) {
         setStatus(err.response.data.message)
       }
@@ -102,18 +89,9 @@ const LoginForm = ({ toggleVisibility }) => {
         />
         <FormButton>Sign In</FormButton>
         {status && <FormError>{status}</FormError>}
-        <p className="text-gray-500 mt-6 text-center cursor-pointer">
-          Not a registered company?{' '}
-          <a
-            className="text-blue-600 hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out"
-            onClick={toggleVisibility}
-          >
-            Register
-          </a>
-        </p>
       </form>
     </>
   )
 }
 
-export default LoginForm
+export default VoterLoginForm

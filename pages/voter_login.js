@@ -4,8 +4,11 @@ import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
 import Cookies from 'js-cookie'
 import { Router } from '../routes'
+import Layout from '../components/layout'
+import FormContainer from '../components/ui/form-container'
+import VoterLoginForm from '../components/voter/voter-login-form'
 
-class LoginForm extends Component {
+class VoterLoginPage extends Component {
   state = {
     election_address: '',
   }
@@ -104,10 +107,14 @@ class LoginForm extends Component {
         <Head>
           <title>Voter login</title>
         </Head>
-        {this.LoginForm()}
+        <Layout>
+          <FormContainer>
+            <VoterLoginForm />
+          </FormContainer>
+        </Layout>
       </>
     )
   }
 }
 
-export default LoginForm
+export default VoterLoginPage
