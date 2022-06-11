@@ -1,4 +1,3 @@
-import Loader from '../../ui/loader'
 import CandidateForm from './candidate-form'
 import CandidateListContent from './candidate-list-content'
 
