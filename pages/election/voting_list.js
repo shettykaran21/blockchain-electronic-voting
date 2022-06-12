@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
 import api from '../../api'
@@ -14,25 +14,25 @@ const VotingListPage = () => {
   const [electionDescription, setElectionDescription] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      const { data } = await api.post(
-        '/voter',
-        JSON.stringify({ election_address: Cookies.get('address') }),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    const { data } = await api.post(
+      '/voter',
+      JSON.stringify({ election_address: Cookies.get('address') }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
 
-      setVotersList(data.data.voterList)
-      setLoading(false)
-    }
-
-    fetchData()
+    setVotersList(data.data.voterList)
+    setLoading(false)
   }, [])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +76,7 @@ const VotingListPage = () => {
             electionName={electionName}
             electionDescription={electionDescription}
             voters={votersList}
+            fetchVoters={fetchData}
           />
         </DashboardLayout>
       )}

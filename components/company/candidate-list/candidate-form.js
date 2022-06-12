@@ -40,7 +40,7 @@ const CandidateForm = ({ electionDetails, fetchCandidates }) => {
   } = useFormik({
     initialValues: { name: '', description: '', email: '' },
 
-    onSubmit: async (values, { setStatus }) => {
+    onSubmit: async (values, { setStatus, resetForm }) => {
       setLoading(true)
 
       const { name, description, email } = values
@@ -74,6 +74,8 @@ const CandidateForm = ({ electionDetails, fetchCandidates }) => {
         )
 
         fetchCandidates()
+        resetForm()
+
         setTimeout(() => {
           setIsAlertOpen(false)
         }, 5000)

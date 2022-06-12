@@ -9,7 +9,7 @@ const VotingListContent = ({ loading, voters }) => {
       {!loading && voters.length > 0 && (
         <>
           {voters.map((v) => (
-            <VoterCard key={v.name} voterDetails={v} />
+            <VoterCard key={v.id} voterDetails={v} />
           ))}
         </>
       )}

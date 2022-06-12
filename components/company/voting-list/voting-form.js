@@ -10,7 +10,7 @@ import FormError from '../../ui/form-error'
 import FormInput from '../../ui/form-input'
 import Alert from '../../ui/alert'
 
-const VotingForm = ({ electionName, electionDescription }) => {
+const VotingForm = ({ electionName, electionDescription, fetchVoters }) => {
   const [loading, setLoading] = useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false)
   const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false)
@@ -27,7 +27,7 @@ const VotingForm = ({ electionName, electionDescription }) => {
   } = useFormik({
     initialValues: { email: '' },
 
-    onSubmit: async (values, { setStatus }) => {
+    onSubmit: async (values, { setStatus, resetForm }) => {
       setLoading(true)
 
       try {
@@ -37,18 +37,18 @@ const VotingForm = ({ electionName, electionDescription }) => {
           election_name: electionName,
           election_description: electionDescription,
         }
-        const { data } = await api.post(
-          '/voter/register',
-          JSON.stringify(params),
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        )
+
+        await api.post('/voter/register', JSON.stringify(params), {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        fetchVoters()
 
         setIsAlertOpen(true)
         setAlertMsg('Voter added successfully')
+        resetForm()
         setTimeout(() => {
           setIsAlertOpen(false)
         }, 5000)
