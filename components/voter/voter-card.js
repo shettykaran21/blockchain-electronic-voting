@@ -4,14 +4,23 @@ import Cookies from 'js-cookie'
 
 import Election from '../../smart-contracts/election'
 import web3 from '../../smart-contracts/web3'
+import Spinner from '../ui/spinner'
+import { useState } from 'react'
 
-const VoterCard = ({ candidateDetails, candidateId, fetchCandidates }) => {
+const VoterCard = ({
+  candidateDetails,
+  candidateId,
+  fetchCandidates,
+  setAlertMsg,
+  setIsAlertOpen,
+  setIsErrorAlertOpen,
+}) => {
+  const [loading, setLoading] = useState(false)
+
   const { name, description, imageUrl, voteCount } = candidateDetails
 
-  // const vote = () => {
-  //   console.log('Yo')
-  // }
   const vote = async (event) => {
+    setLoading(true)
     const e = Number(parseInt(event.target.id))
 
     const accounts = await web3.eth.getAccounts()
@@ -24,11 +33,24 @@ const VoterCard = ({ candidateDetails, candidateId, fetchCandidates }) => {
         .send({ from: accounts[0] })
 
       fetchCandidates()
+      setIsAlertOpen(true)
+      setTimeout(() => {
+        setIsAlertOpen(false)
+      }, 5000)
+      setAlertMsg('Voted successfully')
     } catch (err) {
-      console.log(err)
-    }
+      setIsErrorAlertOpen(true)
+      setTimeout(() => {
+        setIsErrorAlertOpen(false)
+      }, 5000)
 
-    console.log('Voted!')
+      if (err.code === 4001) {
+        setAlertMsg(err.message)
+      } else {
+        setAlertMsg('Cannot vote more than once 😢')
+      }
+    }
+    setLoading(false)
   }
 
   return (
@@ -53,11 +75,11 @@ const VoterCard = ({ candidateDetails, candidateId, fetchCandidates }) => {
               {voteCount}
             </p>
             <button
-              className="rounded-md inline-block py-2 px-4 text-sm text-white justify-center items-center bg-blue-primary"
+              className="rounded-md inline-block w-16 h-8 text-sm text-white justify-center items-center bg-gradient-to-br from-blue-gradient-1 to-blue-gradient-2 relative"
               id={candidateId}
               onClick={vote}
             >
-              Vote
+              {loading ? <Spinner /> : 'Vote'}
             </button>
           </div>
         </div>
