@@ -15,7 +15,7 @@ import web3 from '../../../smart-contracts/web3'
 import FormAlert from '../../election/form-alert'
 import Alert from '../../ui/alert'
 
-const CandidateForm = ({ electionDetails }) => {
+const CandidateForm = ({ electionDetails, fetchCandidates }) => {
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false)
@@ -72,6 +72,8 @@ const CandidateForm = ({ electionDetails }) => {
         setAlertMsg(
           'Candidate registered successfully. Please check your mail for confirmation'
         )
+
+        fetchCandidates()
         setTimeout(() => {
           setIsAlertOpen(false)
         }, 5000)

@@ -7,13 +7,13 @@ const CandidateCard = ({ candidateDetails }) => {
   return (
     <div className="flex justify-center">
       <div className="rounded-lg shadow-lg bg-white max-w-[16rem]">
-        <div className="h-[200px] overflow-hidden">
+        <div className="h-[120px] overflow-hidden">
           <img
-            className="rounded-t-lg object-cover"
+            className="rounded-t-lg object-cover object-center"
             src={imageUrl}
             alt="Candidate"
             width={256}
-            height={150}
+            height={120}
           />
         </div>
         <div className="p-6 pb-0">
