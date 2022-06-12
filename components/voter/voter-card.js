@@ -1,10 +1,33 @@
 /* eslint-disable @next/next/no-img-element */
 import { MdOutlineHowToVote } from 'react-icons/md'
+import Cookies from 'js-cookie'
 
-import Button from '../ui/button'
+import Election from '../../smart-contracts/election'
+import web3 from '../../smart-contracts/web3'
 
-const VoterCard = ({ candidateDetails }) => {
+const VoterCard = ({ candidateDetails, buttonId }) => {
   const { name, description, imageUrl, voteCount } = candidateDetails
+
+  // const vote = () => {
+  //   console.log('Yo')
+  // }
+  const vote = async (event) => {
+    const e = Number(parseInt(event.target.id))
+
+    const accounts = await web3.eth.getAccounts()
+    const address = Cookies.get('address')
+    const election = Election(address)
+
+    try {
+      await election.methods
+        .vote(e, Cookies.get('voter_email'))
+        .send({ from: accounts[0] })
+    } catch (err) {
+      console.log(err)
+    }
+
+    console.log('Voted!')
+  }
 
   return (
     <div className="flex justify-center">
@@ -27,7 +50,11 @@ const VoterCard = ({ candidateDetails }) => {
               <MdOutlineHowToVote />
               {voteCount}
             </p>
-            <button className="rounded-md inline-block py-2 px-4 text-sm text-white justify-center items-center bg-blue-primary">
+            <button
+              className="rounded-md inline-block py-2 px-4 text-sm text-white justify-center items-center bg-blue-primary"
+              id={buttonId}
+              onClick={vote}
+            >
               Vote
             </button>
           </div>

@@ -9,8 +9,8 @@ const CandidateList = ({ loading, candidates }) => {
         {!loading && candidates.length === 0 && <p>No registered candidates</p>}
         {!loading && candidates.length > 0 && (
           <>
-            {candidates.map((c) => (
-              <VoterCard key={c.name} candidateDetails={c} />
+            {candidates.map((c, i) => (
+              <VoterCard key={c.name} buttonId={i} candidateDetails={c} />
             ))}
           </>
         )}
