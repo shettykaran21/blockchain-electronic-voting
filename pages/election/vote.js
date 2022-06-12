@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 
 import Election from '../../smart-contracts/election'
@@ -15,46 +15,50 @@ const VotingPage = () => {
     setElectionAddress(Cookies.get('address'))
   }, [])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
+  const fetchData = useCallback(async () => {
+    setLoading(true)
 
-      const election = await Election(electionAddress)
+    const election = await Election(electionAddress)
 
-      const summary = await election.methods.getElectionDetails().call()
+    const summary = await election.methods.getElectionDetails().call()
 
-      setElectionDetails({
-        electionName: summary[0],
-        electionDescription: summary[1],
-      })
+    setElectionDetails({
+      electionName: summary[0],
+      electionDescription: summary[1],
+    })
 
-      const noOfCandidates = await election.methods.getNumOfCandidates().call()
-      let candidates = []
-      for (let i = 0; i < noOfCandidates; i++) {
-        candidates.push(await election.methods.getCandidate(i).call())
-      }
-
-      const candidatesTransformed = candidates.map((c) => {
-        return {
-          name: c[0],
-          description: c[1],
-          imageUrl: `https://dweb.link/ipfs/${c[2]}`,
-          voteCount: c[3],
-        }
-      })
-
-      setCandidates(candidatesTransformed)
-
-      setLoading(false)
+    const noOfCandidates = await election.methods.getNumOfCandidates().call()
+    let candidates = []
+    for (let i = 0; i < noOfCandidates; i++) {
+      candidates.push(await election.methods.getCandidate(i).call())
     }
 
-    fetchData()
+    const candidatesTransformed = candidates.map((c) => {
+      return {
+        name: c[0],
+        description: c[1],
+        imageUrl: `https://dweb.link/ipfs/${c[2]}`,
+        voteCount: c[3],
+      }
+    })
+
+    setCandidates(candidatesTransformed)
+
+    setLoading(false)
   }, [electionAddress])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   return (
     <DashboardLayout>
       {electionDetails && (
-        <CandidateList loading={loading} candidates={candidates} />
+        <CandidateList
+          loading={loading}
+          candidates={candidates}
+          fetchCandidates={fetchData}
+        />
       )}
     </DashboardLayout>
   )

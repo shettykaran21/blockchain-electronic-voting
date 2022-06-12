@@ -1,7 +1,7 @@
 import Loader from '../ui/loader'
 import VoterCard from './voter-card'
 
-const CandidateList = ({ loading, candidates }) => {
+const CandidateList = ({ loading, candidates, fetchCandidates }) => {
   return (
     <div className="pr-16 p-8">
       <div className="grid grid-cols-4 gap-4 mt-8">
@@ -10,7 +10,12 @@ const CandidateList = ({ loading, candidates }) => {
         {!loading && candidates.length > 0 && (
           <>
             {candidates.map((c, i) => (
-              <VoterCard key={c.name} buttonId={i} candidateDetails={c} />
+              <VoterCard
+                key={i}
+                candidateId={i}
+                candidateDetails={c}
+                fetchCandidates={fetchCandidates}
+              />
             ))}
           </>
         )}

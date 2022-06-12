@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 import Election from '../../smart-contracts/election'
 import web3 from '../../smart-contracts/web3'
 
-const VoterCard = ({ candidateDetails, buttonId }) => {
+const VoterCard = ({ candidateDetails, candidateId, fetchCandidates }) => {
   const { name, description, imageUrl, voteCount } = candidateDetails
 
   // const vote = () => {
@@ -22,6 +22,8 @@ const VoterCard = ({ candidateDetails, buttonId }) => {
       await election.methods
         .vote(e, Cookies.get('voter_email'))
         .send({ from: accounts[0] })
+
+      fetchCandidates()
     } catch (err) {
       console.log(err)
     }
@@ -52,7 +54,7 @@ const VoterCard = ({ candidateDetails, buttonId }) => {
             </p>
             <button
               className="rounded-md inline-block py-2 px-4 text-sm text-white justify-center items-center bg-blue-primary"
-              id={buttonId}
+              id={candidateId}
               onClick={vote}
             >
               Vote
