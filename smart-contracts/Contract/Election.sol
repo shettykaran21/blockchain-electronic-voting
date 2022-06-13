@@ -36,13 +36,15 @@ contract ElectionFact {
     )
   {
     address val = companyEmail[email].deployedAddress;
-    if (val == address(0)) return (address(0), '', 'Create an election.');
-    else
+    if (val == address(0)) {
+      return (address(0), '', 'Create an election.');
+    } else {
       return (
         companyEmail[email].deployedAddress,
         companyEmail[email].el_n,
         companyEmail[email].el_d
       );
+    }
   }
 }
 

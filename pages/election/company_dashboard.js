@@ -7,6 +7,9 @@ import api from '../../api'
 import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
 import Dashboard from '../../components/company/dashboard'
 
+let candidateNames = []
+let candidateVotes = []
+
 const CompanyDashboardPage = () => {
   const [votersList, setVotersList] = useState(null)
   const [numOfVoters, setNumOfVoters] = useState(0)
@@ -53,8 +56,8 @@ const CompanyDashboardPage = () => {
 
         for (let i = 0; i < noOfCandidates; i++) {
           const candidate = await election.methods.getCandidate(i).call()
-          graphEmail.push(candidate[0])
-          graphVotes.push(candidate[3])
+          candidateNames.push(candidate[0])
+          candidateVotes.push(candidate[3])
         }
       } catch (err) {
         console.log(err.message)
@@ -70,7 +73,10 @@ const CompanyDashboardPage = () => {
         <title>Company Dashboard</title>
       </Head>
       <DashboardLayout>
-        <Dashboard />
+        <Dashboard
+          candidateNames={candidateNames}
+          candidateVotes={candidateVotes}
+        />
       </DashboardLayout>
     </>
   )

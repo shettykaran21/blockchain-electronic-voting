@@ -1,53 +1,39 @@
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
 import { Bar } from 'react-chartjs-2'
-import 'chartjs-plugin-annotation'
 
 import Election from '../../../smart-contracts/election'
 
-let cand = []
-let graphEmail = []
-let graphVotes = []
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-const options = {
-  maintainAspectRatio: true,
-  responsive: true,
-  scales: {
-    yAxes: [
+const Dashboard = ({ candidateNames, candidateVotes }) => {
+  const options = {
+    maintainAspectRatio: true,
+    responsive: true,
+  }
+
+  const data = {
+    labels: candidateNames,
+    datasets: [
       {
-        height: '500px',
-        stacked: true,
-        gridLines: {
-          display: true,
-          color: 'rgba(255,99,132,0.2)',
-        },
+        label: 'Vote Count',
+        backgroundColor: 'rgba(255,99,132,0.2)',
+        borderColor: 'rgba(255,99,132,1)',
+        borderWidth: 2,
+        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+        hoverBorderColor: 'rgba(255,99,132,1)',
+        data: candidateVotes,
       },
     ],
-    xAxes: [
-      {
-        width: '500px',
-        gridLines: {
-          display: false,
-        },
-      },
-    ],
-  },
-}
+  }
 
-const data = {
-  labels: graphEmail,
-  datasets: [
-    {
-      label: 'Vote Counts',
-      backgroundColor: 'rgba(255,99,132,0.2)',
-      borderColor: 'rgba(255,99,132,1)',
-      borderWidth: 2,
-      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-      hoverBorderColor: 'rgba(255,99,132,1)',
-      data: graphVotes,
-    },
-  ],
-}
-
-const Dashboard = () => {
   const endElection = async (event) => {
     let candidate = 0
     try {
