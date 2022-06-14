@@ -10,7 +10,7 @@ const CandidateList = ({
   return (
     <div className="pr-16 p-8">
       <h1 className="font-heading font-semibold text-2xl">Candidate List</h1>
-      <div className="flex justify-between items-start relative">
+      <div className="flex justify-between items-start gap-8 relative">
         <CandidateListContent candidates={candidates} loading={loading} />
         <CandidateForm
           electionDetails={electionDetails}
