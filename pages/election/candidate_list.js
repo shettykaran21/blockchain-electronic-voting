@@ -5,6 +5,7 @@ import Cookies from 'js-cookie'
 import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
 import CandidateList from '../../components/company/candidate-list'
 import Election from '../../smart-contracts/election'
+import ElectionDetails from '../../components/election/election-details'
 
 const CandidateListPage = () => {
   const [electionAddress, setElectionAddress] = useState(Cookies.get('address'))
@@ -59,6 +60,10 @@ const CandidateListPage = () => {
         <title>BlockVote | Candidate List</title>
       </Head>
       <DashboardLayout>
+        <ElectionDetails
+          electionName={electionDetails.electionName}
+          electionDescription={electionDetails.electionDescription}
+        />
         {electionDetails && (
           <CandidateList
             loading={loading}

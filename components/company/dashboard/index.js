@@ -1,7 +1,13 @@
 import Election from '../../../smart-contracts/election'
 import Charts from './charts'
 
-const Dashboard = ({ candidateNames, candidateVotes }) => {
+const Dashboard = ({
+  candidateNames,
+  candidateVotes,
+  votersList,
+  numOfVoters,
+  numOfCandidates,
+}) => {
   const endElection = async (event) => {
     let candidate = 0
     try {
@@ -30,7 +36,13 @@ const Dashboard = ({ candidateNames, candidateVotes }) => {
   }
 
   return (
-    <Charts candidateNames={candidateNames} candidateVotes={candidateVotes} />
+    <Charts
+      candidateNames={candidateNames}
+      candidateVotes={candidateVotes}
+      votersList={votersList}
+      numOfVoters={numOfVoters}
+      numOfCandidates={numOfCandidates}
+    />
   )
 }
 

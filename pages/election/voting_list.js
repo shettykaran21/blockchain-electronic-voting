@@ -1,15 +1,15 @@
 import Head from 'next/head'
 import { useCallback, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
+
 import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
 import api from '../../api'
 import Election from '../../smart-contracts/election'
 import VotingList from '../../components/company/voting-list'
+import ElectionDetails from '../../components/election/election-details'
 
 const VotingListPage = () => {
   const [votersList, setVotersList] = useState(null)
-  const [numOfVoters, setNumOfVoters] = useState(0)
-  const [numOfCandidates, setNumOfCandidates] = useState(0)
   const [electionName, setElectionName] = useState(null)
   const [electionDescription, setElectionDescription] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -40,14 +40,11 @@ const VotingListPage = () => {
         const election = Election(Cookies.get('address'))
 
         const summary = await election.methods.getElectionDetails().call()
-        const noOfVoters = await election.methods.getNumOfVoters().call()
 
         const noOfCandidates = await election.methods
           .getNumOfCandidates()
           .call()
 
-        setNumOfVoters(noOfVoters)
-        setNumOfCandidates(noOfCandidates)
         setElectionName(summary[0])
         setElectionDescription(summary[1])
 
@@ -71,6 +68,10 @@ const VotingListPage = () => {
       </Head>
       {votersList && (
         <DashboardLayout>
+          <ElectionDetails
+            electionName={electionName}
+            electionDescription={electionDescription}
+          />
           <VotingList
             loading={loading}
             electionName={electionName}

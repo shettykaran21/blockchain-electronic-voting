@@ -1,4 +1,8 @@
 import { Bar, Doughnut } from 'react-chartjs-2'
+import { BsFillPeopleFill } from 'react-icons/bs'
+import { GiVikingHelmet } from 'react-icons/gi'
+import { GoGraph } from 'react-icons/go'
+
 import { mapColorsToLabels } from '../../../utils'
 
 ChartJS.register(
@@ -37,7 +41,13 @@ const barChartOptions = {
 
 const doughnutOptions = { responsive: true, maintainAspectRatio: false }
 
-const Charts = ({ candidateNames, candidateVotes }) => {
+const Charts = ({
+  candidateNames,
+  candidateVotes,
+  votersList,
+  numOfVoters,
+  numOfCandidates,
+}) => {
   const barChartData = {
     labels: candidateNames,
     datasets: [
@@ -67,21 +77,60 @@ const Charts = ({ candidateNames, candidateVotes }) => {
       },
     ],
   }
+
+  const iconSize = 30
+  const list = [
+    {
+      title: 'Registered Voters',
+      count: numOfVoters,
+      icon: <BsFillPeopleFill fontSize={iconSize} />,
+    },
+    {
+      title: 'Candidates',
+      count: numOfCandidates,
+      icon: <GiVikingHelmet fontSize={iconSize} />,
+    },
+    {
+      title: 'Total Votes',
+      count: votersList?.count,
+      icon: <GoGraph fontSize={iconSize} />,
+    },
+  ]
+
   return (
-    <div className="p-8 flex gap-8 h-[30rem] w-[40rem]">
-      <Bar
-        data={barChartData}
-        options={barChartOptions}
-        width={100}
-        height={100}
-      />
-      <Doughnut
-        data={doughnutData}
-        options={doughnutOptions}
-        width={100}
-        height={100}
-      />
-    </div>
+    <>
+      <div className="flex w-full mt-6">
+        {list.map((el, i) => {
+          const { title, count, icon } = el
+          return (
+            <div
+              key={i}
+              className="p-3 flex justify-center items-center gap-4 grow border border-slate-700"
+            >
+              <div>{icon}</div>
+              <div>
+                <p className="text-sm">{title}</p>
+                <p className="text-sm">{count}</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <div className="p-8 flex gap-8 h-[30rem] w-[40rem]">
+        <Bar
+          data={barChartData}
+          options={barChartOptions}
+          width={100}
+          height={100}
+        />
+        <Doughnut
+          data={doughnutData}
+          options={doughnutOptions}
+          width={100}
+          height={100}
+        />
+      </div>
+    </>
   )
 }
 

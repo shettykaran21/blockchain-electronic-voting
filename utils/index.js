@@ -30,8 +30,6 @@ export const mapColorsToLabels = (labels) => {
     borderColors.push(labelColors[label])
   })
 
-  console.log(borderColors)
-
   const backgroundColors = borderColors.map((color) => (color += '33'))
   const hoverBackgroundColors = borderColors.map((color) => (color += '66'))
 

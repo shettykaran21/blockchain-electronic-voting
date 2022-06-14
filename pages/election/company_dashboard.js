@@ -6,6 +6,7 @@ import Election from '../../smart-contracts/election'
 import api from '../../api'
 import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
 import Dashboard from '../../components/company/dashboard'
+import ElectionDetails from '../../components/election/election-details'
 
 const CompanyDashboardPage = () => {
   const [votersList, setVotersList] = useState(null)
@@ -70,9 +71,16 @@ const CompanyDashboardPage = () => {
         <title>Company Dashboard</title>
       </Head>
       <DashboardLayout>
+        <ElectionDetails
+          electionName={electionName}
+          electionDescription={electionDescription}
+        />
         <Dashboard
           candidateNames={candidateNames}
           candidateVotes={candidateVotes}
+          votersList={votersList}
+          numOfVoters={numOfVoters}
+          numOfCandidates={numOfCandidates}
         />
       </DashboardLayout>
     </>
