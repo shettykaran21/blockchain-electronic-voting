@@ -7,15 +7,14 @@ import api from '../../api'
 import DashboardLayout from '../../components/company/dashboard/dashboard-layout'
 import Dashboard from '../../components/company/dashboard'
 
-let candidateNames = []
-let candidateVotes = []
-
 const CompanyDashboardPage = () => {
   const [votersList, setVotersList] = useState(null)
   const [numOfVoters, setNumOfVoters] = useState(0)
   const [numOfCandidates, setNumOfCandidates] = useState(0)
   const [electionName, setElectionName] = useState('')
   const [electionDescription, setElectionDescription] = useState('')
+  const [candidateNames, setCandidateNames] = useState([])
+  const [candidateVotes, setCandidateVotes] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,12 +51,10 @@ const CompanyDashboardPage = () => {
         setElectionName(summary[0])
         setElectionDescription(summary[1])
 
-        console.log(summary)
-
         for (let i = 0; i < noOfCandidates; i++) {
           const candidate = await election.methods.getCandidate(i).call()
-          candidateNames.push(candidate[0])
-          candidateVotes.push(candidate[3])
+          setCandidateNames((prev) => [...prev, candidate[0]])
+          setCandidateVotes((prev) => [...prev, candidate[3]])
         }
       } catch (err) {
         console.log(err.message)
