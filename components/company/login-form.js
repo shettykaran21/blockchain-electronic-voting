@@ -15,11 +15,11 @@ import Alert from '../ui/alert'
 const LoginForm = ({ toggleVisibility }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false)
 
-  useEffect(() => {
-    return () => {
-      setIsAlertOpen(false)
-    }
-  })
+  // useEffect(() => {
+  //   return () => {
+  //     setIsAlertOpen(false)
+  //   }
+  // })
 
   const {
     values,

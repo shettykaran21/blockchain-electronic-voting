@@ -67,7 +67,7 @@ const SignupForm = ({ toggleVisibility }) => {
 
   return (
     <>
-      {isAlertOpen && <Alert>Signed Up successfully! Please login</Alert>}
+      {isAlertOpen && <Alert>Signed up successfully! Redirecting...</Alert>}
 
       <form onSubmit={handleSubmit}>
         <FormInput
