@@ -74,6 +74,7 @@ const CompanyDashboardPage = () => {
         <ElectionDetails
           electionName={electionName}
           electionDescription={electionDescription}
+          endButton
         />
         <Dashboard
           candidateNames={candidateNames}

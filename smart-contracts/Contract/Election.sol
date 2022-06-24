@@ -49,13 +49,11 @@ contract ElectionFact {
 }
 
 contract Election {
-  //election_authority's address
   address election_authority;
   string election_name;
   string election_description;
   bool status;
 
-  //election_authority's address taken when it deploys the contract
   constructor(
     address authority,
     string memory name,
@@ -67,13 +65,11 @@ contract Election {
     status = true;
   }
 
-  //Only election_authority can call this function
   modifier owner() {
     require(msg.sender == election_authority, 'Error: Access Denied.');
     _;
   }
 
-  //candidate election_description
   struct Candidate {
     string candidate_name;
     string candidate_description;
@@ -82,25 +78,17 @@ contract Election {
     string email;
   }
 
-  //candidate mapping
   mapping(uint8 => Candidate) public candidates;
 
-  //voter election_description
   struct Voter {
     uint8 candidate_id_voted;
     bool voted;
   }
 
-  //voter mapping
   mapping(string => Voter) voters;
-
-  //counter of number of candidates
   uint8 numCandidates;
-
-  //counter of number of voters
   uint8 numVoters;
 
-  //function to add candidate to mapping
   function addCandidate(
     string memory candidate_name,
     string memory candidate_description,
@@ -114,30 +102,25 @@ contract Election {
       imgHash,
       0,
       email
-    ); //add the values to the mapping
+    );
   }
 
-  //function to vote and check for double voting
   function vote(uint8 candidateID, string memory e) public {
-    //if false the vote will be registered
     require(!voters[e].voted, 'Error:You cannot double vote');
 
-    voters[e] = Voter(candidateID, true); //add the values to the mapping
+    voters[e] = Voter(candidateID, true);
     numVoters++;
     candidates[candidateID].voteCount++; //increment vote counter of candidate
   }
 
-  //function to get count of candidates
   function getNumOfCandidates() public view returns (uint8) {
     return numCandidates;
   }
 
-  //function to get count of voters
   function getNumOfVoters() public view returns (uint8) {
     return numVoters;
   }
 
-  //function to get candidate information
   function getCandidate(uint8 candidateID)
     public
     view
@@ -158,7 +141,6 @@ contract Election {
     );
   }
 
-  //function to return winner candidate information
   function winnerCandidate() public view owner returns (uint8) {
     uint8 largestVotes = candidates[0].voteCount;
     uint8 candidateID;
